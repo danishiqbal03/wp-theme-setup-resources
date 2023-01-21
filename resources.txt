@@ -23,3 +23,5 @@ function reg_nav_menu(){
 }
 add_action('init','reg_nav_menu');
 
+
+// install classic editor plugin for page-template feature
