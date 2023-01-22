@@ -1,0 +1,55 @@
+function custom_checkout_template( $template ) {
+    if ( is_checkout() ) {
+        $template = get_stylesheet_directory() . '/custom-checkout.php';
+    }
+    return $template;
+}
+add_filter( 'template_include', 'custom_checkout_template' );
+
+
+function update_excel_on_order_success( $order_id ) {
+    // Get the order object
+    $order = wc_get_order( $order_id );
+
+    require 'phpspreadsheet/vendor/autoload.php';
+
+    $fname = 'example1.xls';
+
+    if(file_exists(__DIR__ . '/'.$fname)){
+        // echo "exist";
+        // die();
+        try{
+            $excel = \PhpOffice\PhpSpreadsheet\IOFactory::load(__DIR__ . '/'.$fname);
+            $sheet = $excel->getActiveSheet();
+            // Get the next empty row
+            $row = $sheet->getHighestRow() + 1;
+            $sheet->setCellValue('A'.$row, $order->get_id());
+            $sheet->setCellValue('B'.$row, $order->get_date_created()->format('Y-m-d H:i:s'));
+            $sheet->setCellValue('C'.$row, $order->get_total());
+            $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($excel, 'Xls');
+
+        } catch (Exception $e){
+            echo $e->getMessage();
+        }
+    } else {
+        // echo "not exist";
+        // die();
+        $excel = new PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $excel->getActiveSheet();
+        $row = 1;
+        $sheet->setCellValue('A'.$row, 'ID');
+        $sheet->setCellValue('B'.$row, 'Date');
+        $sheet->setCellValue('C'.$row, 'Total');
+    
+        $row++;
+        $sheet->setCellValue('A'.$row, $order->get_id());
+        $sheet->setCellValue('B'.$row, $order->get_date_created()->format('Y-m-d H:i:s'));
+        $sheet->setCellValue('C'.$row, $order->get_total());
+        $writer = new PhpOffice\PhpSpreadsheet\Writer\Xlsx($excel);
+    }
+    
+    $writer->save(__DIR__ . '/'.$fname);
+    echo '<p>Please click on "Download" to download your xlsx sheet</p><br><br>';
+    echo '<a href="'. get_stylesheet_directory_uri().'/'.$fname.'">Download</a>';
+}
+add_action( 'woocommerce_checkout_order_processed', 'update_excel_on_order_success' );
