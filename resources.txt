@@ -41,3 +41,6 @@ add_action('wp_enqueue_scripts','theme_scripts');
 
 //phpspreadsheet library
 https://drive.google.com/file/d/1X90a1PBhhd0tBz8Pg6xmmHk-sRX90D10/view?usp=sharing
+
+//wp.media example
+https://webkul.com/blog/how-to-use-wordpress-media-upload-in-plugin-theme/
