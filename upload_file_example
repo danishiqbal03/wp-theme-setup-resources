@@ -1,0 +1,71 @@
+<form id="profile-picture-form">
+  <input type="file" name="profile-picture" id="profile-picture">
+  <input type="submit" value="Upload">
+</form>
+<script>
+jQuery(document).ready(function($){
+    // Attach an event listener to the form's submit button
+    $("#profile-picture-form").submit(function(e) {
+    e.preventDefault();
+
+    // Create a new FormData object
+    var formData = new FormData();
+
+    // Add the file to the FormData object
+    var file = $("#profile-picture")[0].files[0];
+    formData.append("profile-picture", file);
+    formData.append("action", 'upload_file');
+
+    // Send the AJAX request
+    $.ajax({
+        type: "POST",
+        url:  "<?php echo admin_url('admin-ajax.php'); ?>",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+        // Handle the response (e.g. update the profile picture)
+        var json = JSON.parse(response);
+        if (json.status === "success") {
+            console.log("File uploaded successfully!");
+        } else {
+            console.log("File upload failed.");
+        }
+        }
+    });
+    });
+
+})
+</script>
+
+add_action('wp_ajax_upload_file', 'upload_file_fnc');
+add_action('wp_ajax_nopriv_upload_file', 'upload_file_fnc');
+function upload_file_fnc(){
+      // Handle the file upload using wp_handle_upload()
+  $uploadedfile = $_FILES['profile-picture'];
+  $upload_overrides = array( 'test_form' => false );
+  $movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
+
+  if ( $movefile && ! isset( $movefile['error'] ) ) {
+    // File was successfully uploaded
+
+    // Create an attachment
+    $attachment = array(
+      'guid'           => $movefile['url'], 
+      'post_mime_type' => $movefile['type'],
+      'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $movefile['file'] ) ),
+      'post_content'   => '',
+      'post_status'    => 'inherit'
+    );
+    $attach_id = wp_insert_attachment( $attachment, $movefile['file'] );
+    require_once( ABSPATH . 'wp-admin/includes/image.php' );
+    $attach_data = wp_generate_attachment_metadata( $attach_id, $movefile['file'] );
+    wp_update_attachment_metadata( $attach_id, $attach_data );
+
+    // Return the attachment ID
+    echo json_encode(array("status" => "success", "attachment_id" => $attach_id));
+  } else {
+    // File upload failed
+    echo json_encode(array("status" => "error", "message" => $movefile['error']));
+  }
+}
