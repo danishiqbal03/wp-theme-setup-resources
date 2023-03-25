@@ -1,5 +1,19 @@
 <?php
 
+function is_image_or_video_url( $url ) {
+    $filetype = wp_check_filetype( $url );
+    $image_types = array( 'jpg', 'jpeg', 'png', 'gif' );
+    $video_types = array( 'mp4', 'm4v', 'webm', 'ogv', 'wmv' );
+
+    if ( in_array( $filetype['ext'], $image_types ) ) {
+        return 'image';
+    } elseif ( in_array( $filetype['ext'], $video_types ) ) {
+        return 'video';
+    } else {
+        return 'unknown';
+    }
+}
+
 function add_banner_media_meta_box() {
     add_meta_box(
         'banner-media',
