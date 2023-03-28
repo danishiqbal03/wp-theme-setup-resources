@@ -1,18 +1,5 @@
 <?php
-// Add custom field for cover image
-function is_image_or_video_url( $url ) {
-    $filetype = wp_check_filetype( $url );
-    $image_types = array( 'jpg', 'jpeg', 'png', 'gif' );
-    $video_types = array( 'mp4', 'm4v', 'webm', 'ogv', 'wmv' );
 
-    if ( in_array( $filetype['ext'], $image_types ) ) {
-        return 'image';
-    } elseif ( in_array( $filetype['ext'], $video_types ) ) {
-        return 'video';
-    } else {
-        return 'unknown';
-    }
-}
 function add_banner_slider_meta_box() {
     $post_id = isset( $_GET['post'] ) ? $_GET['post'] : null;
     if ( $post_id && $post_id == 7 ) {
