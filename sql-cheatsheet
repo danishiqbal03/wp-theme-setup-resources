@@ -3,5 +3,18 @@ To query meta: (example)
 SELECT ud.ID, umt.meta_value AS first_name, umt2.meta_value AS last_name FROM wp_users AS ud 
 LEFT JOIN wp_usermeta AS umt ON (ud.ID = umt.user_id AND umt.meta_key = 'first_name')  
 LEFT JOIN wp_usermeta AS umt2 ON (ud.ID = umt2.user_id AND umt2.meta_key = 'last_name')
+**********************
+
+Pagination: (Example)
+
+$q .=" LIMIT ".$per_page." OFFSET ".$offset;
+*-------*
+
+SELECT column1, column2, ... FROM table_name
+LIMIT :per_page OFFSET :offset;
+
+:per_page represents the maximum number of rows to be returned per page, and :offset represents the starting position of the result set for each page. 
+For example, if you want to retrieve 10 rows per page and start from the 11th row for the second page,
+you can set :per_page to 10 and :offset to 10.
 
 
