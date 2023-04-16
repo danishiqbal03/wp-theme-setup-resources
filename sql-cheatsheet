@@ -1,0 +1,7 @@
+To query meta: (example)
+
+SELECT ud.ID, umt.meta_value AS first_name, umt2.meta_value AS last_name FROM wp_users AS ud 
+LEFT JOIN wp_usermeta AS umt ON (ud.ID = umt.user_id AND umt.meta_key = 'first_name')  
+LEFT JOIN wp_usermeta AS umt2 ON (ud.ID = umt2.user_id AND umt2.meta_key = 'last_name')
+
+
