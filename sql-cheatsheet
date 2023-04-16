@@ -24,4 +24,14 @@ Count Distinct (Example)
 "SELECT COUNT(DISTINCT session_id) as session_count FROM $wpdb->prefix".$history_tbl." 
 WHERE user_id =".$crr_user." AND category_id= ".$parent." AND child_category_id=".$term_id
 
+***************************
 
+HAVING Clause (Example)
+
+The HAVING clause can reference and filter based on the results of aggregate functions, as shown in the previous example. In contrast, 
+the WHERE clause typically filters rows based on individual column values and does not operate on the results of aggregate functions.
+
+SELECT country, SUM(order_amount) AS total_amount
+FROM orders
+GROUP BY country
+HAVING total_amount > 100;
