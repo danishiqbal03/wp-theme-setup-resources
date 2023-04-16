@@ -17,4 +17,11 @@ LIMIT :per_page OFFSET :offset;
 For example, if you want to retrieve 10 rows per page and start from the 11th row for the second page,
 you can set :per_page to 10 and :offset to 10.
 
+****************************
+
+Count Distinct (Example)
+
+"SELECT COUNT(DISTINCT session_id) as session_count FROM $wpdb->prefix".$history_tbl." 
+WHERE user_id =".$crr_user." AND category_id= ".$parent." AND child_category_id=".$term_id
+
 
